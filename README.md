@@ -22,10 +22,18 @@ Same goes for commenting, users can comment (first checks if the user can commen
 
 Votes and Comments can only be approved by PM, ADMIN.
 
+#### Authorization
+The "/api/user/login" path will give you the JWT token in the header with the name of
+"Jwt-Token".
+
+For authorization you can use Postman's Bearer Token authorization, 
+or you can make a header with the name of "Authorization" 
+and the value of "Bearer {JWT-TOKEN}" .
+
 #### SwaggerUI
 This project also has swagger ui at:
 
-http://127.0.0.1/api/swagger-ui.html
+127.0.0.1{port}/api/swagger-ui.html
 
 ## More Details
 
