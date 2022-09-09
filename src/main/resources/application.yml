@@ -1,0 +1,27 @@
+jwt.secret : adf3a1f465asdf184EAGKEG%W%$fdlmkndbfvklm
+
+server:
+  port: 8686
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/demonstration
+      database: demonstration
+      auto-index-creation: true
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+  web:
+    resources:
+      add-mappings: false
+
+  main:
+    allow-circular-references: true
+
+
+springdoc:
+  swagger-ui:
+    defaultModelsExpandDepth: -1
+    show-extensions: false
