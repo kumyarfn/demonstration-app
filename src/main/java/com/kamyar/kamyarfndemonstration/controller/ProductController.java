@@ -4,7 +4,7 @@ import com.kamyar.kamyarfndemonstration.dto.request.product.ProductAddingDto;
 import com.kamyar.kamyarfndemonstration.dto.request.product.ProductUpdateDto;
 import com.kamyar.kamyarfndemonstration.dto.response.HttpResponse;
 import com.kamyar.kamyarfndemonstration.service.ProductService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import com.kamyar.kamyarfndemonstration.swagger.SecuredRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.kamyar.kamyarfndemonstration.enums.Constants.BEARER_AUTH;
-
 
 @RestController @RequestMapping("/product")
-@SecurityRequirement(name = BEARER_AUTH)
-public class ProductController {
+public class ProductController implements SecuredRestController {
 
     @Autowired
     private ProductService productService;

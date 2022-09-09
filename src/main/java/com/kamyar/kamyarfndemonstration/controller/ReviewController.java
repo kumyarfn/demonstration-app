@@ -5,7 +5,7 @@ import com.kamyar.kamyarfndemonstration.dto.request.vote.VoteDto;
 import com.kamyar.kamyarfndemonstration.dto.response.HttpResponse;
 import com.kamyar.kamyarfndemonstration.service.CommentService;
 import com.kamyar.kamyarfndemonstration.service.VoteService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import com.kamyar.kamyarfndemonstration.swagger.SecuredRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.kamyar.kamyarfndemonstration.enums.Constants.BEARER_AUTH;
-
 @RestController
 @RequestMapping("/review")
-@SecurityRequirement(name = BEARER_AUTH)
-public class ReviewController {
+public class ReviewController implements SecuredRestController {
 
     @Autowired
     private VoteService voteService;
