@@ -1,6 +1,5 @@
 package com.kamyar.kamyarfndemonstration.exception.handle;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.kamyar.kamyarfndemonstration.exception.BaseException;
 import com.kamyar.kamyarfndemonstration.dto.response.HttpResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -44,11 +43,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<HttpResponse> handleAuthenticationException(AuthenticationException e) {
         return ResponseEntity.badRequest().body(HttpResponse.create(AUTHENTICATION_EXCEPTION.getCode(), AUTHENTICATION_EXCEPTION.getMessage()));
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<HttpResponse> handleJwtException(JWTVerificationException e) {
-        return ResponseEntity.badRequest().body(HttpResponse.create(JWT_EXCEPTION.getCode(), e.getMessage()));
     }
 
     @Override

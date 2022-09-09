@@ -26,7 +26,7 @@ public class ProductController {
     }
 
     @PutMapping
-    @PreAuthorize("hasAnyAuthority('pm::write', 'pp::write')")
+    @PreAuthorize("hasAnyAuthority('pp::write')")
     public ResponseEntity<HttpResponse> updateProduct(@RequestBody @Valid ProductUpdateDto dto){
         return ResponseEntity.ok(productService.updateProduct(dto));
     }

@@ -53,12 +53,20 @@ public class UserService implements UserDetailsService {
         return HttpResponse.create(SUCCESS_RESULT.getCode(), USER_REGISTERED_SUCCESSFULLY.getMessage());
     }
 
-
+    /**
+     * Checks if the username or phoneNumber has not been
+     * in the db before then persists the user.
+     */
     public UserEntity register(UserRegistrationDto dto, Role role) {
         validateNewUser(dto.getUsername(), dto.getPhoneNumber());
         return userRepository.save(getUserForRegistering(dto, role));
     }
 
+    /**
+     * This is for authenticating the user via
+     * authentication manager bean and returns the desired
+     * JWT in the response's header.
+     */
     public ResponseEntity<HttpResponse> authenticate(String username, String password) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         UserEntity user = userRepository.findByUsername(username).get();
@@ -66,6 +74,11 @@ public class UserService implements UserDetailsService {
         return new ResponseEntity<>(HttpResponse.create(SUCCESS_RESULT.getCode(), USER_LOGIN_WAS_SUCCESSFUL.getMessage()), jwtHeader, HttpStatus.OK);
     }
 
+
+    /**
+     * Checks if the username or phoneNumber has not been
+     * in the db before
+     */
     public void validateNewUser(String username, String phoneNumber) {
         userRepository.findByUsername(username).ifPresent(x -> {
             throw new UserException(USERNAME_ALREADY_EXISTS);
@@ -75,6 +88,10 @@ public class UserService implements UserDetailsService {
         });
     }
 
+    /**
+     * Converts a user into a user entity and it also
+     * gets Role as input.
+     */
     private UserEntity getUserForRegistering(UserRegistrationDto dto, Role role) {
         UserEntity user = new UserEntity();
         user.setId(null);
@@ -90,13 +107,12 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    /**
+     * Fetches the desired user specified by
+     * it id.
+     */
     private UserEntity getUserById(String userID){
         return userRepository.findById(userID).orElseThrow(() -> new UserException(USER_WAS_NOT_FOUND));
-    }
-
-    public Boolean isProviderBanned(String userId){
-        if (getUserById(userId).getIsNonLocked()) return Boolean.FALSE;
-        else return Boolean.TRUE;
     }
 
 }

@@ -2,6 +2,8 @@ jwt.secret : adf3a1f465asdf184EAGKEG%W%$fdlmkndbfvklm
 
 server:
   port: 8686
+  servlet:
+    context-path: /api
 
 spring:
   data:

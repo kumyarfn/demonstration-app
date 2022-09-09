@@ -34,6 +34,13 @@ public class VoteService {
     @Autowired
     private SaleService saleService;
 
+    /**
+     * This method is for saving a user's vote, and
+     * it first checks if the user CAN vote or not.
+     * And that's on whether the vote is enabled or
+     * not or only users that have bought the product
+     * can vote or not.
+     */
     public HttpResponse saveVote(VoteDto dto) {
         ProductEntity product = productService.getProductById(dto.getProductId());
         if (product.getIsVoteEnabled()) {
@@ -50,6 +57,14 @@ public class VoteService {
         } else return HttpResponse.create(PRODUCT_VOTING_IS_NOT_ENABLEd);
     }
 
+    /**
+     * Checks whether a user can
+     * vote on a specific product or not, and
+     * it takes userId and productId and returns
+     * a boolean as result.
+     * @param userId
+     * @param productId
+     */
     public HttpResponse canUserVote(String userId, String productId) {
         ProductEntity product = productService.getProductById(productId);
         if (product.getIsVoteEnabled()) {
@@ -75,14 +90,27 @@ public class VoteService {
         return HttpResponse.create(SUCCESS_RESULT.getCode(), VOTE_SUCCESSFULLY_APPROVED.getMessage());
     }
 
+    /**
+     * Updates a vote to be approved,
+     * and It takes voteId as its parameter.
+     * @param voteId
+     */
     private VoteEntity getVoteById(String voteId) {
         return voteRepository.findById(voteId).orElseThrow(() -> new VoteException(VOTE_ID_IS_WRONG));
     }
 
+    /**
+     * Converts a VoteDto into a Vote entity.
+     */
     private VoteEntity getVoteEntityFromDto(VoteDto dto) {
         return new VoteEntity(null, dto.getUserId(), dto.getProductId(), new Date(), dto.getVote(), Boolean.FALSE);
     }
 
+    /**
+     * Gets the specified (by product id) product's
+     * approved votes count.
+     * @param productId
+     */
     private long getApprovedVotesCount(String productId) {
         return mongoTemplate.count(new Query().addCriteria(Criteria.where(PRODUCT_ID_FIELD).is(productId)
                 .and(IS_APPROVED_FIELD).is(Boolean.TRUE)), VoteEntity.class);

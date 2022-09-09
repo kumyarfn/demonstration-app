@@ -35,6 +35,11 @@ public class ProductService {
     @Autowired
     private ProviderService providerService;
 
+    /**
+     * Adds a product to database. First checks the provider
+     * then saves the product and then updates the provider's
+     * last added product date.
+     */
     public HttpResponse addProduct(ProductAddingDto dto){
         ProviderEntity provider = providerService.getProviderById(dto.getProviderId());
         productRepository.save(getProductFromDto(dto));
@@ -43,25 +48,42 @@ public class ProductService {
         return HttpResponse.create(SUCCESS_RESULT.getCode(), PRODUCT_WAS_SUCCESSFULLY_ADDED.getMessage());
     }
 
+    /**
+     * Updates a product in the database.
+     * Only certain roles can update a product.
+     */
     public HttpResponse updateProduct(ProductUpdateDto dto){
         productRepository.save(getUpdatedProduct(getProductById(dto.getProductId()), dto));
         return HttpResponse.create(SUCCESS_RESULT.getCode(), PRODUCT_WAS_SUCCESSFULLY_UPDATED);
     }
 
+    /**
+     * Converts productDto to product entity.
+     */
     private ProductEntity getProductFromDto(ProductAddingDto dto) {
         return new ProductEntity(null, dto.getProviderId(), dto.getTitle(), dto.getPrice(), new Date(),
                 dto.getDetails(), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, null);
     }
 
 
+    /**
+     * Fetches the product specified via its id.
+     */
     public ProductEntity getProductById(String id){
         return productRepository.findById(id).orElseThrow(() -> new ProductException(PRODUCT_ID_IS_WRONG));
     }
 
+    /**
+     * Persists a product into the db.
+     */
     public ProductEntity saveProduct(ProductEntity entity){
         return productRepository.save(entity);
     }
 
+    /**
+     * Converts a product entity into the
+     * wanted parameters.
+     */
     private ProductEntity getUpdatedProduct(ProductEntity entity, ProductUpdateDto dto){
         if (dto.getBuyersOnlyReview() != null) entity.setBuyersOnlyReview(dto.getBuyersOnlyReview());
         if (dto.getIsAvailable() != null) entity.setIsAvailable(dto.getIsAvailable());
@@ -70,6 +92,10 @@ public class ProductService {
         return entity;
     }
 
+    /**
+     * With the help of ProductQuery class (written by me)
+     * it finds the desired products for rendering the page.
+     */
     public HttpResponse searchProducts(String providerId, Boolean isAvailable, Double minPrice, Double maxPrice,
                                               String sort, Sort.Direction sortDirection, Integer pageNumber, Integer PageSize){
         return HttpResponse.create(SUCCESS_RESULT.getCode(), mongoTemplate.find(ProductQuery.createQuery(providerId,

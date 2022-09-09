@@ -1,12 +1,10 @@
 package com.kamyar.kamyarfndemonstration.security.filter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.kamyar.kamyarfndemonstration.dto.response.HttpResponse;
 import com.kamyar.kamyarfndemonstration.util.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.kamyar.kamyarfndemonstration.enums.ResultMessage.JWT_EXCEPTION;
 import static com.kamyar.kamyarfndemonstration.enums.Security.OPTIONS_HTTP_METHOD;
 import static com.kamyar.kamyarfndemonstration.enums.Security.TOKEN_PREFIX;
 

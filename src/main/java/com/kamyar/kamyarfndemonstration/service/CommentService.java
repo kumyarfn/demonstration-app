@@ -36,6 +36,13 @@ public class CommentService {
     @Autowired
     private SaleService saleService;
 
+    /**
+     * This method is for saving a user's comment, and
+     * it first checks if the user CAN comment or not.
+     * And that's on whether the comment is enabled or
+     * not or only users that have bought the product
+     * can comment or not.
+     */
     public HttpResponse saveComment(CommentDto dto) {
         ProductEntity product = productService.getProductById(dto.getProductId());
         if (product.getIsCommentEnabled()) {
@@ -52,6 +59,14 @@ public class CommentService {
         } else return HttpResponse.create(PRODUCT_COMMENT_IS_NOT__ENABLED);
     }
 
+    /**
+     * Checks whether a user can
+     * comment on a specific product or not, and
+     * it takes userId and productId and returns
+     * a boolean as result.
+     * @param userId
+     * @param productId
+     */
     public HttpResponse canUserComment(String userId, String productId) {
         ProductEntity product = productService.getProductById(productId);
         if (product.getIsCommentEnabled()) {
@@ -65,6 +80,11 @@ public class CommentService {
         } else return HttpResponse.create(SUCCESS_RESULT.getCode(), Boolean.FALSE);
     }
 
+    /**
+     * Updates a comment to be approved,
+     * and It takes commentId as its parameter.
+     * @param commentId
+     */
     public HttpResponse approveComment(String commentId) {
         CommentEntity comment = getCommentById(commentId);
         comment.setIsApproved(Boolean.TRUE);
@@ -76,12 +96,22 @@ public class CommentService {
         return HttpResponse.create(SUCCESS_RESULT.getCode(), getLastThreeCommentsFetchDtos(productId));
     }
 
+    /**
+     * Gets the specified (by product id) product's
+     * approved comments count.
+     * @param productId
+     */
     public HttpResponse getCommentsCount(String productId) {
         return HttpResponse.create(SUCCESS_RESULT.getCode(), mongoTemplate.count(new Query()
                         .addCriteria(Criteria.where(PRODUCT_ID_FIELD).is(productId).and(IS_APPROVED_FIELD).is(Boolean.TRUE)),
                 CommentEntity.class));
     }
 
+    /**
+     * Gets the last 3 comment for the specified product
+     * via productId.
+     * @param productId
+     */
     public List<CommentFetchingDto> getLastThreeCommentsFetchDtos(String productId) {
         return mongoTemplate.find(new Query()
                         .addCriteria(Criteria.where(PRODUCT_ID_FIELD).is(productId).and(IS_APPROVED_FIELD).is(Boolean.TRUE))
@@ -89,10 +119,21 @@ public class CommentService {
                 , CommentFetchingDto.class, COMMENT_COLLECTION_NAME);
     }
 
+    /**
+     * Converts a commentDto to a comment entity,
+     * @param dto
+     * @return CommentEntity
+     */
     private CommentEntity getCommentFromDto(CommentDto dto) {
         return new CommentEntity(null, dto.getUserId(), dto.getProductId(), new Date(), dto.getComment(), Boolean.FALSE);
     }
 
+    /**
+     * Looks in the collection for comment
+     * specified by commentId.
+     * @param commentId
+     * @return CommentEntity
+     */
     private CommentEntity getCommentById(String commentId) {
         return commentRepository.findById(commentId).orElseThrow(() -> new CommentException(COMMENT_ID_IS_WRONG));
     }

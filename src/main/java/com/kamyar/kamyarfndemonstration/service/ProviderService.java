@@ -23,20 +23,24 @@ import static com.kamyar.kamyarfndemonstration.enums.Role.PRODUCT_PROVIDER;
 public class ProviderService {
 
     @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
     private ProviderRepository providerRepository;
 
     @Autowired
     private UserService userService;
 
+    /**
+     * Registers a provider user.
+     */
     public HttpResponse registerProvider(ProviderRegistrationDto dto){
         userService.validateNewUser(dto.getUsername(), dto.getPhoneNumber());
         providerRepository.save(getProviderFromDto(dto, userService.register(dto, PRODUCT_PROVIDER).getId()));
         return HttpResponse.create(SUCCESS_RESULT.getCode(), "Provider was successfully registered");
     }
 
+    /**
+     * Converts dto into a provider entity and the userId of
+     * the provider must be given.
+     */
     private ProviderEntity getProviderFromDto(ProviderRegistrationDto dto, String userId){
         ProviderEntity providerEntity = new ProviderEntity();
         providerEntity.setId(null);
@@ -46,10 +50,18 @@ public class ProviderService {
         return providerEntity;
     }
 
+    /**
+     * Fetches the provider in db specified by its id.
+     *
+     */
     public ProviderEntity getProviderById(String id){
         return providerRepository.findById(id).orElseThrow(() -> new ProviderException(PROVIDER_WAS_NOT_FOUND));
     }
 
+    /**
+     * This method updates a provider entity's
+     * last added product date.
+     */
     public ProviderEntity updateProviderLastAddedDate(ProviderEntity entity){
          return providerRepository.save(entity);
     }

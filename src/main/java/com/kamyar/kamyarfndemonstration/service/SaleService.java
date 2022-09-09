@@ -16,6 +16,10 @@ public class SaleService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    /**
+     * Checks whether if the user has bought the product or not,
+     * and it returns a boolean.
+     */
     public Boolean userHasNotBoughtProduct(String userId, String productId){
         return mongoTemplate.find(new Query().addCriteria
                 (Criteria.where(USER_ID_Field).is(userId)
