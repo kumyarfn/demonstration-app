@@ -1,5 +1,6 @@
 package com.kamyar.kamyarfndemonstration.db.entity;
 
+import com.kamyar.kamyarfndemonstration.enums.ProductType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,9 @@ public class ProductEntity {
 
     @Field
     private String details;
+
+    @Field
+    private ProductType type;
 
     @Field
     private Boolean isAvailable;

@@ -111,7 +111,7 @@ public class UserService implements UserDetailsService {
      * Fetches the desired user specified by
      * it id.
      */
-    private UserEntity getUserById(String userID){
+    public UserEntity getUserById(String userID){
         return userRepository.findById(userID).orElseThrow(() -> new UserException(USER_WAS_NOT_FOUND));
     }
 

@@ -1,6 +1,5 @@
 package com.kamyar.kamyarfndemonstration.security.filter;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.kamyar.kamyarfndemonstration.util.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -26,27 +25,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
-            if (request.getMethod().equalsIgnoreCase(OPTIONS_HTTP_METHOD.getValue())) response.setStatus(HttpStatus.OK.value());
-            else {
-                String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-                if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_PREFIX.getValue())){
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-                String token = authorizationHeader.substring(TOKEN_PREFIX.getValue().length());
-                String username = jwtTokenProvider.getSubject(token);
-                if (jwtTokenProvider.isTokenValid(username,token))
-                    SecurityContextHolder.getContext().setAuthentication(jwtTokenProvider.getAuthentication(username, jwtTokenProvider.getAuthorities(token), request));
-                else SecurityContextHolder.clearContext();
-            }
-            filterChain.doFilter(request,response);
-        }catch (JWTVerificationException e){
-
-            e.printStackTrace();
-
+        if (request.getMethod().equalsIgnoreCase(OPTIONS_HTTP_METHOD.getValue())) response.setStatus(HttpStatus.OK.value());
+        else {
+          String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+          if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_PREFIX.getValue())){
+              filterChain.doFilter(request, response);
+              return;
+          }
+          String token = authorizationHeader.substring(TOKEN_PREFIX.getValue().length());
+          String username = jwtTokenProvider.getSubject(token);
+          if (jwtTokenProvider.isTokenValid(username,token))
+              SecurityContextHolder.getContext().setAuthentication(jwtTokenProvider.getAuthentication(username, jwtTokenProvider.getAuthorities(token), request));
+          else SecurityContextHolder.clearContext();
         }
-
+        filterChain.doFilter(request,response);
     }
 
 }

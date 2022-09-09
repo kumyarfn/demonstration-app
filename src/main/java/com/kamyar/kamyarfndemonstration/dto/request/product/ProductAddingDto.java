@@ -1,5 +1,6 @@
 package com.kamyar.kamyarfndemonstration.dto.request.product;
 
+import com.kamyar.kamyarfndemonstration.enums.ProductType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,9 @@ public class ProductAddingDto {
     private Double price;
 
     private String details;
+
+    @NotNull(message = PRODUCT_TYPE_MUST_NOT_BE_NULL)
+    private ProductType type;
 
     @NotNull(message = IS_AVAILABLE_MUST_NOT_BE_NULL)
     private Boolean isAvailable;

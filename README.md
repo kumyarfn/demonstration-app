@@ -22,12 +22,17 @@ Same goes for commenting, users can comment (first checks if the user can commen
 
 Votes and Comments can only be approved by PM, ADMIN.
 
+#### SwaggerUI
+This project also has swagger ui at:
+
+http://127.0.0.1/api/swagger-ui.html
+
 ## More Details
 
 On each method in the service package there's more description and details.
 
 ## Project status
-As the end of 9/9/2002 this project is gonna stop.
+As of 9/10/2002 this project is going to stop.
 
 
 ## License

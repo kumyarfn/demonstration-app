@@ -40,6 +40,8 @@ public enum ResultMessage {
     PRODUCT_SEARCH_PAGE_NUMBER_EXCEPTION(-21, "pageNumber is empty."),
     PRODUCT_SEARCH_PAGE_SIZE_EXCEPTION(-22, "pageSize is empty."),
     USER_WAS_NOT_FOUND(-23, "User was not found."),
+    USER_HAS_VOTED_BEFORE(-24, "User has already voted on this product."),
+    USER_HAS_COMMENTED_BEFORE(-25, "User has already commented on this product."),
     EXCEPTION(-30, "");
 
 

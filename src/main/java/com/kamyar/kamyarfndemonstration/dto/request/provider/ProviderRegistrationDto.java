@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static com.kamyar.kamyarfndemonstration.enums.ValidationMessage.CORPORATION_NAME_MUST_NOT_BE_EMPTY;
@@ -19,7 +20,7 @@ public class ProviderRegistrationDto extends UserRegistrationDto {
     @NotEmpty(message = CORPORATION_NAME_MUST_NOT_BE_EMPTY)
     private String corporationName;
 
-    @NotEmpty(message = PRODUCT_TYPES_MUST_NOT_BE_EMPTY)
+    @NotNull(message = PRODUCT_TYPES_MUST_NOT_BE_EMPTY)
     private List<ProductType> productTypes;
 
 }

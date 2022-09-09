@@ -36,8 +36,12 @@ public class CommentService {
     @Autowired
     private SaleService saleService;
 
+    @Autowired
+    private UserService userService;
+
     /**
-     * This method is for saving a user's comment, and
+     * First checks if the user HAS commented or not. Then
+     * this method is for saving a user's comment, and
      * it first checks if the user CAN comment or not.
      * And that's on whether the comment is enabled or
      * not or only users that have bought the product
@@ -45,6 +49,8 @@ public class CommentService {
      */
     public HttpResponse saveComment(CommentDto dto) {
         ProductEntity product = productService.getProductById(dto.getProductId());
+        userService.getUserById(dto.getUserId());
+        checkIfUserVotedBefore(dto.getUserId(), dto.getProductId());
         if (product.getIsCommentEnabled()) {
             if (product.getBuyersOnlyReview()) {
                 if (saleService.userHasNotBoughtProduct(dto.getUserId(), dto.getProductId())) return HttpResponse.create(USER_HAS_NOT_BOUGHT_PRODUCT);
@@ -69,6 +75,8 @@ public class CommentService {
      */
     public HttpResponse canUserComment(String userId, String productId) {
         ProductEntity product = productService.getProductById(productId);
+        userService.getUserById(userId);
+        checkIfUserVotedBefore(userId, productId);
         if (product.getIsCommentEnabled()) {
             if (product.getBuyersOnlyReview()) {
                 if (saleService.userHasNotBoughtProduct(userId, productId))
@@ -78,6 +86,15 @@ public class CommentService {
                 return HttpResponse.create(SUCCESS_RESULT.getCode(), Boolean.TRUE);
             }
         } else return HttpResponse.create(SUCCESS_RESULT.getCode(), Boolean.FALSE);
+    }
+
+    /**
+     * Checks whether the specified user has commented
+     * on the specified product or not.
+     */
+    private void checkIfUserVotedBefore(String userId, String productId){
+        if (!mongoTemplate.find(new Query().addCriteria(Criteria.where(USER_ID_Field).is(userId).and(PRODUCT_ID_FIELD).is(productId)), CommentEntity.class).isEmpty())
+            throw new CommentException(USER_HAS_COMMENTED_BEFORE);
     }
 
     /**
@@ -92,16 +109,23 @@ public class CommentService {
         return HttpResponse.create(SUCCESS_RESULT.getCode(), COMMENT_SUCCESSFULLY_APPROVED.getMessage());
     }
 
+    /**
+     * First checks the product id and
+     * then ets the last three.
+     */
     public HttpResponse getLastThreeComments(String productId) {
+        productService.getProductById(productId);
         return HttpResponse.create(SUCCESS_RESULT.getCode(), getLastThreeCommentsFetchDtos(productId));
     }
 
     /**
+     * Checks if the product id is correct first.
      * Gets the specified (by product id) product's
      * approved comments count.
      * @param productId
      */
     public HttpResponse getCommentsCount(String productId) {
+        productService.getProductById(productId);
         return HttpResponse.create(SUCCESS_RESULT.getCode(), mongoTemplate.count(new Query()
                         .addCriteria(Criteria.where(PRODUCT_ID_FIELD).is(productId).and(IS_APPROVED_FIELD).is(Boolean.TRUE)),
                 CommentEntity.class));

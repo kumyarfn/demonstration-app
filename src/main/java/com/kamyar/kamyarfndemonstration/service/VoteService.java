@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
-import static com.kamyar.kamyarfndemonstration.enums.Constants.IS_APPROVED_FIELD;
-import static com.kamyar.kamyarfndemonstration.enums.Constants.PRODUCT_ID_FIELD;
+import static com.kamyar.kamyarfndemonstration.enums.Constants.*;
 import static com.kamyar.kamyarfndemonstration.enums.ResultMessage.*;
 
 @Service
@@ -34,15 +33,21 @@ public class VoteService {
     @Autowired
     private SaleService saleService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * This method is for saving a user's vote, and
-     * it first checks if the user CAN vote or not.
+     * it first checks whether the user HAS voted or not
+     * then checks whether the user CAN vote or not.
      * And that's on whether the vote is enabled or
      * not or only users that have bought the product
      * can vote or not.
      */
     public HttpResponse saveVote(VoteDto dto) {
         ProductEntity product = productService.getProductById(dto.getProductId());
+        userService.getUserById(dto.getUserId());
+        checkIfUserVotedBefore(dto.getUserId(), dto.getProductId());
         if (product.getIsVoteEnabled()) {
             if (product.getBuyersOnlyReview()) {
                 if (saleService.userHasNotBoughtProduct(dto.getUserId(), dto.getProductId())) return HttpResponse.create(USER_HAS_NOT_BOUGHT_PRODUCT);
@@ -58,6 +63,15 @@ public class VoteService {
     }
 
     /**
+     * Checks whether the specified user has voted
+     * on the specified product or not.
+     */
+    private void checkIfUserVotedBefore(String userId, String productId){
+        if (!mongoTemplate.find(new Query().addCriteria(Criteria.where(USER_ID_Field).is(userId).and(PRODUCT_ID_FIELD).is(productId)), VoteEntity.class).isEmpty())
+            throw new VoteException(USER_HAS_VOTED_BEFORE);
+    }
+
+    /**
      * Checks whether a user can
      * vote on a specific product or not, and
      * it takes userId and productId and returns
@@ -67,6 +81,8 @@ public class VoteService {
      */
     public HttpResponse canUserVote(String userId, String productId) {
         ProductEntity product = productService.getProductById(productId);
+        userService.getUserById(userId);
+        checkIfUserVotedBefore(userId, productId);
         if (product.getIsVoteEnabled()) {
             if (product.getBuyersOnlyReview()) {
                 if (saleService.userHasNotBoughtProduct(userId, productId))
@@ -81,12 +97,12 @@ public class VoteService {
     public HttpResponse approveVote(String voteId) {
         VoteEntity voteEntity = getVoteById(voteId);
         ProductEntity product = productService.getProductById(voteEntity.getProductId());
-        voteEntity.setIsApproved(Boolean.TRUE);
-        voteRepository.save(voteEntity);
         long approvedCount = getApprovedVotesCount(product.getId());
         if (approvedCount == 0) product.setAverageVote(voteEntity.getVote());
         else product.setAverageVote(((approvedCount * product.getAverageVote()) + voteEntity.getVote()) / (approvedCount + 1));
         productService.saveProduct(product);
+        voteEntity.setIsApproved(Boolean.TRUE);
+        voteRepository.save(voteEntity);
         return HttpResponse.create(SUCCESS_RESULT.getCode(), VOTE_SUCCESSFULLY_APPROVED.getMessage());
     }
 
@@ -107,11 +123,13 @@ public class VoteService {
     }
 
     /**
+     * Checks if the product id is correct first.
      * Gets the specified (by product id) product's
      * approved votes count.
      * @param productId
      */
     private long getApprovedVotesCount(String productId) {
+        productService.getProductById(productId);
         return mongoTemplate.count(new Query().addCriteria(Criteria.where(PRODUCT_ID_FIELD).is(productId)
                 .and(IS_APPROVED_FIELD).is(Boolean.TRUE)), VoteEntity.class);
     }

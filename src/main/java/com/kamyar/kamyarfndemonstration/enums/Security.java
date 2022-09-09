@@ -10,7 +10,7 @@ public enum Security {
         JWT_TOKEN_HEADER("Jwt-Token"),
         KAMYAR_LLC("KAMYAR CO. COPYRIGHT Ⓒ2022"),
         AUDIENCE("ADMIN||USER"),
-        EXPIRATION_TIME("1800000"),
+        EXPIRATION_TIME("55000000"),
         TOKEN_PREFIX("Bearer "),
         OPTIONS_HTTP_METHOD("OPTIONS");
 

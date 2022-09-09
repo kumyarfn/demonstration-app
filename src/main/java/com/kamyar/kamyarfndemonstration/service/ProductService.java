@@ -12,13 +12,10 @@ import com.kamyar.kamyarfndemonstration.util.ProductQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 
 import static com.kamyar.kamyarfndemonstration.enums.Constants.PRODUCT_COLLECTION_NAME;
 import static com.kamyar.kamyarfndemonstration.enums.ResultMessage.*;
@@ -54,7 +51,7 @@ public class ProductService {
      */
     public HttpResponse updateProduct(ProductUpdateDto dto){
         productRepository.save(getUpdatedProduct(getProductById(dto.getProductId()), dto));
-        return HttpResponse.create(SUCCESS_RESULT.getCode(), PRODUCT_WAS_SUCCESSFULLY_UPDATED);
+        return HttpResponse.create(SUCCESS_RESULT.getCode(), PRODUCT_WAS_SUCCESSFULLY_UPDATED.getMessage());
     }
 
     /**
@@ -62,7 +59,7 @@ public class ProductService {
      */
     private ProductEntity getProductFromDto(ProductAddingDto dto) {
         return new ProductEntity(null, dto.getProviderId(), dto.getTitle(), dto.getPrice(), new Date(),
-                dto.getDetails(), Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, null);
+                dto.getDetails(), dto.getType() ,Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE, null);
     }
 
 

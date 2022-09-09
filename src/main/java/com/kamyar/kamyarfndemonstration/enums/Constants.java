@@ -19,6 +19,8 @@ public class Constants {
     public static final List<String> SUPER_ADMIN_AUTHORITIES = Stream.concat(ADMIN_AUTHORITIES.stream(),
             Stream.of("SUPER::ADMIN")).collect(Collectors.toList());
 
+    public static final String BEARER_AUTH = "bearerAuth";
+
 
     public static final String COMMENT_COLLECTION_NAME = "comment";
     public static final String PRODUCT_COLLECTION_NAME = "product";

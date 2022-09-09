@@ -15,6 +15,7 @@ public class ValidationMessage {
     public static final String IS_COMMENT_ENABLED_MUST_NOT_BE_NULL = "isCommentEnabled must not be null.";
     public static final String BUYERS_ONLY_REVIEW_MUST_NOT_BE_NULL = "buyersOnlyReview must not be null.";
     public static final String VOTE_MUST_NOT_BE_NULL = "vote must not be null.";
+    public static final String PRODUCT_TYPE_MUST_NOT_BE_NULL = "type must not be null.";
 
     public static final String FIRST_NAME_MUST_NOT_BE_EMPTY = "firstName must not be empty.";
     public static final String LAST_NAME_MUST_NOT_BE_EMPTY = "lastName must not be empty.";
