@@ -40,6 +40,7 @@ This project also has swagger ui at:
 On each method in the service package there's more description and details.
 
 ## Project status
+Project has been tested and all APIs work as desired.
 As of 9/10/2002 this project is going to stop.
 
 
